@@ -1,6 +1,7 @@
 set.seed(19)
 library(MASS)
 library(mvtnorm)
+
 # MH Algorithm
 mh_algorithm<- function(h, n_samples = 1000, dim=5) 
 {
@@ -11,10 +12,13 @@ mh_algorithm<- function(h, n_samples = 1000, dim=5)
   {
     proposal <- mvrnorm(1, mu = x[i - 1, ], Sigma = diag(rep(h, dim)))
     
-    target_current<-dmvnorm(x[i-1, ], mean=rep(0,dim), sigma = diag(c(1, 2, 5, 10, 100)))
-    target_proposal<-dmvnorm(proposal, mean=rep(0,dim), sigma = diag(c(1, 2, 5, 10, 100)))
+    target_current<-dmvnorm(x[i-1, ], mean=rep(0,dim), sigma = diag(c(1, 2, 5, 10, 100)), log = TRUE)
+    target_proposal<-dmvnorm(proposal, mean=rep(0,dim), sigma = diag(c(1, 2, 5, 10, 100)), log = TRUE)
     
-    acceptance_ratio <- min(1,target_proposal / target_current)
+    
+    # for numeric stability
+    log_alpha <- target_proposal - target_current
+    acceptance_ratio<-min(1, exp(log_alpha))
     
     if (runif(1) < acceptance_ratio) {
       x[i, ] <- proposal
