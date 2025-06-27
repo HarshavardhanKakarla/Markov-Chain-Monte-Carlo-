@@ -14,34 +14,6 @@ log_mala_den <- function(from, to, h) {
   dnorm(to, mean = mean_shift, sd = sqrt(2 * h), log = TRUE)
 }
 # MALA implementation
-"mala_normal <- function(h, n_iter=10000) {
-  x <- numeric(n_iter)
-  x[1] <- 0
-  accept <- 0
-  
-  for (i in 2:n_iter) {
-    # Proposal
-    drift <- h*(5 - x[i-1])/20
-    noise <- sqrt(2*h)*rnorm(1)
-    proposal <- x[i-1] + drift + noise
-    
-    # Reverse move
-    drift_rev <- h*(5 - proposal)/20
-    log_alpha <- dnorm(proposal, mean = 5, sd = sqrt(20), log = TRUE) -
-      dnorm(x[i-1], mean = 5, sd = sqrt(20), log = TRUE) +
-      log_mala_den(proposal, x[i-1], h) -
-      log_mala_den(x[i-1], proposal, h)
-    
-    
-    if (log(runif(1)) < log_alpha) {
-      x[i] <- proposal
-      accept <- accept + 1
-    } else {
-      x[i] <- x[i-1]
-    }
-  }
-  list(samples=x, acceptance=accept/(n_iter-1))
-}"
 mala_normal <- function(h, n_iter=10000) {
   x <- numeric(n_iter)
   x[1] <- 0
